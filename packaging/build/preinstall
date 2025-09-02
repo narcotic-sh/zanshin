@@ -1,0 +1,24 @@
+#!/bin/bash
+APP_PATH="/Applications/Zanshin.app"
+
+# Check if running on Apple Silicon
+if [[ $(uname -m) != "arm64" ]]; then
+    echo "Error: Zanshin requires an Apple Silicon Mac. M series, late 2020 onwards."
+    osascript -e 'set dialogResult to display dialog "Zanshin requires an Apple Silicon Mac.\nM series, late 2020 onwards.\nSorry. To compensate, the best we can do is point you to a cool video." buttons {"F*ck off", "Alright, let'"'"'s have a look"} default button "Alright, let'"'"'s have a look" with icon stop' -e 'if button returned of dialogResult is "Alright, let'"'"'s have a look" then' -e 'open location "https://www.youtube.com/embed/V-ekvBYHLJc?autoplay=1&start=14"' -e 'end if'
+    exit 1
+fi
+
+# Abort install if Zanshin is running
+if pgrep -f "$APP_PATH" >/dev/null; then
+    echo "Error: Zanshin is currently running. Please quit the app and try again."
+    osascript -e 'display dialog "Installation cannot continue because Zanshin is currently running.\n\nPlease quit Zanshin and try installing again." buttons {"OK"} default button "OK" with icon stop with title "Zanshin Installer"'
+    exit 1
+fi
+
+# Remove existing app bundle if it exists
+if [ -d "$APP_PATH" ]; then
+    echo "Removing existing app bundle at $APP_PATH..."
+    rm -rf "$APP_PATH"
+fi
+
+exit 0

@@ -1,0 +1,21 @@
+# Python 3.11.13
+
+flask
+flask-socketio
+flask-cors
+pyzmq
+ffmpeg-python
+pillow
+requests
+xxhash
+opencv-python
+mutagen
+av
+
+# macOS only
+pyobjc-core; sys_platform == "darwin"
+pyobjc-framework-cocoa; sys_platform == "darwin"
+
+# Separate installs
+# git+https://github.com/narcotic-sh/senko.git[nvidia|nvidia-old]
+# yt-dlp (pre-release version)

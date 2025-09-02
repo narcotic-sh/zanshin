@@ -1,0 +1,32 @@
+# Files and directories to ignore when building tar.xz archive
+
+__pycache__
+*/__pycache__
+*/__pycache__/*
+
+.DS_Store
+*/.DS_Store
+
+__MACOSX
+*/__MACOSX
+*/__MACOSX/*
+
+.vscode/
+./src/misc
+
+# Python development venv
+./env/
+./.venv
+
+# Config files
+./media.db
+./settings.json
+
+# Svelte
+./src/ui
+
+# Temp download/processing dir
+./src/temp
+
+# .tarignore
+./.tarignore

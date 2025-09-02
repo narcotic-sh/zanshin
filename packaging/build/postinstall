@@ -1,0 +1,76 @@
+#!/bin/bash
+INSTALLER_USER=$(stat -f "%Su" /dev/console)
+
+ZANSHIN_DIR="/Users/$INSTALLER_USER/Library/Application Support/Zanshin"
+TEMP_TARBALL="/private/var/tmp/Zanshin/tarball.tar.xz"
+APP_PATH="/Applications/Zanshin.app"
+
+# Create temp directory for preserving user data
+TEMP_PRESERVE_DIR="/private/var/tmp/Zanshin_preserve_$$"
+
+# Check if Zanshin directory exists and preserve user data if present
+if [ -d "$ZANSHIN_DIR" ]; then
+    # Check for files to preserve
+    if [ -f "$ZANSHIN_DIR/zanshin/media.db" ] || [ -f "$ZANSHIN_DIR/zanshin/settings.json" ] || [ -f "$ZANSHIN_DIR/first_run" ]; then
+        echo "Preserving user data..."
+        mkdir -p "$TEMP_PRESERVE_DIR"
+
+        # Copy files to temp location if they exist
+        [ -f "$ZANSHIN_DIR/zanshin/media.db" ] && cp "$ZANSHIN_DIR/zanshin/media.db" "$TEMP_PRESERVE_DIR/"
+        [ -f "$ZANSHIN_DIR/zanshin/settings.json" ] && cp "$ZANSHIN_DIR/zanshin/settings.json" "$TEMP_PRESERVE_DIR/"
+        [ -f "$ZANSHIN_DIR/first_run" ] && cp "$ZANSHIN_DIR/first_run" "$TEMP_PRESERVE_DIR/"
+    fi
+
+    echo "Removing existing Zanshin directory..."
+    rm -rf "$ZANSHIN_DIR"
+fi
+
+# Create fresh Zanshin directory
+mkdir -p "$ZANSHIN_DIR"
+
+# Extract the tarball directly to the target directory using all CPU cores
+if [ -f "$TEMP_TARBALL" ]; then
+    echo "Extracting tarball to $ZANSHIN_DIR..."
+    # Use XZ_DEFAULTS to enable multithreaded decompression
+    XZ_DEFAULTS="-T 0" tar -xpf "$TEMP_TARBALL" -C "$ZANSHIN_DIR"
+else
+    echo "Error: Tarball not found at $TEMP_TARBALL"
+    exit 1
+fi
+
+# Set appropriate permissions for the user on the Zanshin dir in ~/Library/Application Support
+chown -R "$INSTALLER_USER:staff" "$ZANSHIN_DIR"
+
+# Restore preserved user data if it exists
+if [ -d "$TEMP_PRESERVE_DIR" ]; then
+    echo "Restoring user data..."
+    # Ensure the zanshin subdirectory exists
+    mkdir -p "$ZANSHIN_DIR/zanshin"
+
+    # Restore files if they were preserved
+    [ -f "$TEMP_PRESERVE_DIR/media.db" ] && mv "$TEMP_PRESERVE_DIR/media.db" "$ZANSHIN_DIR/zanshin/"
+    [ -f "$TEMP_PRESERVE_DIR/settings.json" ] && mv "$TEMP_PRESERVE_DIR/settings.json" "$ZANSHIN_DIR/zanshin/"
+    [ -f "$TEMP_PRESERVE_DIR/first_run" ] && mv "$TEMP_PRESERVE_DIR/first_run" "$ZANSHIN_DIR/"
+
+    # Fix ownership of the restored files
+    [ -f "$ZANSHIN_DIR/zanshin/media.db" ] && chown "$INSTALLER_USER:staff" "$ZANSHIN_DIR/zanshin/media.db"
+    [ -f "$ZANSHIN_DIR/zanshin/settings.json" ] && chown "$INSTALLER_USER:staff" "$ZANSHIN_DIR/zanshin/settings.json"
+    [ -f "$ZANSHIN_DIR/first_run" ] && chown "$INSTALLER_USER:staff" "$ZANSHIN_DIR/first_run"
+
+    # Clean up temp preserve directory
+    rm -rf "$TEMP_PRESERVE_DIR"
+fi
+
+# Clean up the temporary directory and tarball
+rm -rf "$(dirname "$TEMP_TARBALL")"
+
+# Fix ownership for the .app bundle
+if [ -d "$APP_PATH" ]; then
+    echo "Setting ownership for $APP_PATH..."
+    chown -R "$INSTALLER_USER:staff" "$APP_PATH"
+else
+    echo "Warning: $APP_PATH not found"
+fi
+
+echo "Extraction complete."
+exit 0

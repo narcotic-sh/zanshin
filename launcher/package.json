@@ -1,0 +1,29 @@
+{
+    "name": "zanshin",
+    "version": "0.1.0",
+    "description": "Fast local diarization on your Mac",
+    "type": "module",
+    "scripts": {
+        "dev": "vite dev",
+        "build": "vite build",
+        "preview": "vite preview",
+        "check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
+        "check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
+        "tauri": "tauri"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "@tauri-apps/api": "^2.8.0",
+        "@tauri-apps/plugin-opener": "^2.5.0"
+    },
+    "devDependencies": {
+        "@sveltejs/adapter-static": "^3.0.9",
+        "@sveltejs/kit": "^2.37.0",
+        "@sveltejs/vite-plugin-svelte": "^5.1.1",
+        "svelte": "^5.38.6",
+        "svelte-check": "^4.3.1",
+        "typescript": "~5.6.3",
+        "vite": "^6.3.5",
+        "@tauri-apps/cli": "^2.8.4"
+    }
+}

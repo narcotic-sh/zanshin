@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+        %sveltekit.head%
+        <style>
+            html, body {
+                /*height: 100%;
+                margin: 0;
+                padding: 0;*/
+                background-color: var(--bg);
+                /*background-color: #363d31;*/
+            }
+
+            /* body {
+                background-image: url('%sveltekit.assets%/bg7.png');
+                background-size: 100% 100%;
+                background-position: top;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+            } */
+
+            ::selection {
+                background-color: rgb(138, 125, 49);
+            }
+        </style>
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>

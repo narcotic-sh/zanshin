@@ -1,0 +1,10 @@
+*.pkg
+*.app
+Zanshin
+
+macho_finder
+macho_files.txt
+
+macho_signer
+
+env/

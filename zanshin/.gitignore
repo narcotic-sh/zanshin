@@ -1,0 +1,14 @@
+**/__pycache__/
+env/
+.venv/
+
+media.db
+.vscode/
+settings.json
+**/.DS_Store
+
+third_party/
+
+python_interpreter/
+
+THIRD_PARTY_LICENSES
