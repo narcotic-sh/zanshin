@@ -29,7 +29,7 @@ Visit the [website](https://zanshin.sh) for demo videos and screenshots of the U
 残心 / Zanshin is powered by the very fast [Senko](https://github.com/narcotic-sh/senko) speaker diarization pipeline.
 
 ## Installation
-Zanshin is currently only available in packaged form for macOS (Apple Silicon). Click [here](https://zanshin.sh/api/download) to download.
+Zanshin is currently only available in packaged form for macOS (Apple Silicon). Download from the [website](https://zanshin.sh).
 
 For Windows and Linux, packaging is not available yet and will be coming soon. In the mean time, you can get Zanshin running on both of those platforms by entering in some commands in the terminal. Refer to [`DEV_SETUP.md`](/DEV_SETUP.md) for instructions.
 
