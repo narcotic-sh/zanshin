@@ -2,11 +2,9 @@
 **/.DS_Store
 **/__MACOSX/
 
-node_modules
-/.svelte-kit
-.vscode/
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+node_modules/
 
 .vscode/
 .claude/
