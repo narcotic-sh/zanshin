@@ -4,7 +4,16 @@ APP_PATH="/Applications/Zanshin.app"
 # Check if running on Apple Silicon
 if [[ $(uname -m) != "arm64" ]]; then
     echo "Error: Zanshin requires an Apple Silicon Mac. M series, late 2020 onwards."
-    osascript -e 'set dialogResult to display dialog "Zanshin requires an Apple Silicon Mac.\nM series, late 2020 onwards.\nSorry. To compensate, the best we can do is point you to a cool video." buttons {"F*ck off", "Alright, let'"'"'s have a look"} default button "Alright, let'"'"'s have a look" with icon stop' -e 'if button returned of dialogResult is "Alright, let'"'"'s have a look" then' -e 'open location "https://www.youtube.com/embed/V-ekvBYHLJc?autoplay=1&start=14"' -e 'end if'
+    osascript -e 'set dialogResult to display dialog "Zanshin requires an Apple Silicon Mac.\nM series, late 2020 onwards.\nSorry. To compensate, the best we can do is point you to a cool video." buttons {"F*ck off", "Alright, let'"'"'s have a look"} default button "Alright, let'"'"'s have a look" with icon stop with title "Zanshin Installer"' -e 'if button returned of dialogResult is "Alright, let'"'"'s have a look" then' -e 'open location "https://www.youtube.com/embed/V-ekvBYHLJc?autoplay=1&start=14"' -e 'end if'
+    exit 1
+fi
+
+# Check macOS version (requires 12.3 or later for MPS support)
+MACOS_VERSION=$(sw_vers -productVersion)
+REQUIRED_VERSION="12.3"
+if [[ $(printf '%s\n' "$REQUIRED_VERSION" "$MACOS_VERSION" | sort -V | head -n1) != "$REQUIRED_VERSION" ]]; then
+    echo "Error: Zanshin requires macOS $REQUIRED_VERSION or later. Current version: $MACOS_VERSION"
+    osascript -e "display dialog \"Zanshin requires macOS $REQUIRED_VERSION or later for PyTorch MPS support.\\n\\nYour current macOS version is $MACOS_VERSION.\\n\\nPlease update your system and try again.\" buttons {\"OK\"} default button \"OK\" with icon stop with title \"Zanshin Installer\""
     exit 1
 fi
 
