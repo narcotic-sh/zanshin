@@ -712,18 +712,18 @@ def initialize_settings(settings_path=config.SETTINGS_PATH):
     else:
         # Update existing settings file to match expected structure
         update_settings_structure(settings_path, default_settings)
-        
+
         # Validate that background_image and alternate_bg_color are not both enabled
         # If they are, turn them both off
         try:
             with open(settings_path, "r") as file:
                 settings = json.load(file)
-            
+
             if settings.get('background_image') and settings.get('alternate_bg_color'):
                 print("Both background_image and alternate_bg_color are enabled. Disabling both to prevent conflicts.")
                 settings['background_image'] = False
                 settings['alternate_bg_color'] = False
-                
+
                 with open(settings_path, "w") as file:
                     json.dump(settings, file, indent=4)
         except (json.JSONDecodeError, FileNotFoundError, KeyError):
@@ -736,7 +736,7 @@ def get_default_settings():
         "cookies_from_browser": None,
         "identify_speakers": True,
         "background_image": False,
-        "alternate_bg_color": False,
+        "alternate_bg_color": True,
         "restore_zoom_window": True,
         "warmup_processor": True,
         "auto_skip_by_default": True

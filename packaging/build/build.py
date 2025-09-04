@@ -32,8 +32,11 @@ if __name__ == '__main__':
     # root (./)
     root = Path(__file__).parent.parent.parent.as_posix()
 
-    # launcher (./launcher)
+    # ./launcher
     launcher = (Path(root) / "launcher").as_posix()
+
+    # ./launcher/src-tauri
+    src_tauri = (Path(launcher) / "src-tauri").as_posix()
 
     # ./zanshin
     zanshin = (Path(root) / "zanshin").as_posix()
@@ -140,6 +143,7 @@ if __name__ == '__main__':
 
         print('Building SvelteKit frontend code')
 
+        subprocess.run(['bun', 'update'], cwd=ui, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
         subprocess.run(['bun', 'install'], cwd=ui, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
         subprocess.run(['bun', 'run', 'build'], cwd=ui, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
 
@@ -206,7 +210,9 @@ if __name__ == '__main__':
 
     print('Building Tauri launcher executable')
 
+    subprocess.run(['bun', 'update'], cwd=launcher, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
     subprocess.run(['bun', 'install'], cwd=launcher, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+    subprocess.run(['cargo', 'update'], cwd=src_tauri, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
     subprocess.run(['bun', 'run', 'tauri', 'build', '--no-bundle'], cwd=launcher, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
     subprocess.run(['cp', 'launcher/src-tauri/target/release/zanshin', 'packaging/build/Zanshin'], cwd=root, check=True)
 

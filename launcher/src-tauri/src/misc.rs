@@ -76,20 +76,15 @@ pub fn pathbuf_to_string(path: &PathBuf) -> Result<String, String> {
 pub fn run_uv_pip_install(app_support: &std::path::Path) {
     let uv_path = app_support.join("zanshin/third_party/uv/uv");
     let python_path = app_support.join("zanshin/python_interpreter/cpython-3.11.13-macos-aarch64-none/bin/python");
-    let requirements_path = app_support.join("zanshin/requirements.txt");
-
     let uv_path_str = pathbuf_to_string(&uv_path).unwrap();
     let python_path_str = pathbuf_to_string(&python_path).unwrap();
-    let requirements_path_str = pathbuf_to_string(&requirements_path).unwrap();
 
-    let _ = Command::new(&uv_path_str)
-        .args([
-            "pip", "install",
-            "--python", &python_path_str,
-            "-r", &requirements_path_str,
-            "--break-system-packages"
-        ])
-        .status();
+    // Removed uv pip install -r requirements.txt call on every run becuase:
+    //   The purpose of it was to install new packages that get entered into requirements.txt through Zanshin updates.
+    //   However, a new package could either have binary components or change an existing package with binary components
+    //       by making another version of it get installed. In either case, you might end up with fresh unsigned binaries,
+    //       which the OS will not allow to run, thereby breaking the entire Zanshin installation.
+    // Therefore, we only update yt-dlp (if user setting allows), since yt-dlp is pure Python, no binary components.
 
     let _ = Command::new(&uv_path_str)
         .args([
