@@ -7,7 +7,8 @@
 </p>
 
 <p align="center">
-<a href="https://zanshin.sh">Website</a> ·
+<a href="https://zanshin.sh">Website</a> |
+<a href="https://zanshin.sh/screenshots">Screenshots</a> |
 <a href="https://discord.gg/Nf7m5Ftk3c">Discord</a>
 </p>
 
