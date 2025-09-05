@@ -18,8 +18,8 @@ A media player with a novel interface allowing you to navigate by speaker.
 
 - Visualize who speaks when & for how long
 - Jump/skip speaker segments
-- Disable speakers (auto-skip)
 - Set different playback speeds per speaker
+- Auto-skip speakers
 
 It's a better, more efficient way to listen to podcasts, interviews, press confrences etc.
 
