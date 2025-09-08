@@ -352,7 +352,7 @@ T - toggle auto-skip unchecked speakers
         bind:visible={cookes_info_dialog_visible}
         title={'Note for WSL users'}
         text={
-        `You'll need to install Firefox *within* WSL. "sudo apt install firefox", and then open Firefox by running command "firefox". Sign into YouTube, and then select Firefox for this setting and the cookies will be accessible by the downloader.
+        `You'll need to install Firefox *within* WSL. "sudo apt install firefox" (for Debain-based distros), and then open Firefox by running command "firefox". Sign into YouTube, and then select Firefox for this setting and the cookies will be accessible by the downloader.
         `}
     />
 </DialogStack>

@@ -16,11 +16,11 @@ The following tools and packages are required. Please install them before contin
     - If on WSL, don't try to install them from _within_ WSL; simply install them in regular Windows and the GPU will automatically be passed through to WSL.
 - `ffmpeg`
     - `brew install ffmpeg` on macOS
-    - `sudo apt update; sudo apt install ffmpeg` on Linux/WSL
+    - `sudo apt update; sudo apt install ffmpeg` on Debian-based Linux/WSL
 - `clang` if on Linux or WSL
-    - `sudo apt update; sudo apt install clang`
+    - `sudo apt update; sudo apt install clang`, for Debian-based distros
 - `git`
-    - `sudo apt update; sudo apt install git` on Linux/WSL
+    - `sudo apt update; sudo apt install git` on Debian-based Linux/WSL
     - On macOS, should already have it if you have the Xcode Command Line Tools installed
 - [`uv`](https://docs.astral.sh/uv/#installation)
 - [`bun`](https://bun.com/docs/installation)
