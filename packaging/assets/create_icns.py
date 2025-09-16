@@ -172,11 +172,11 @@ def create_icns(png_path, output_path=None, add_padding=True):
 def main():
     """Main entry point for command-line usage."""
     if len(sys.argv) < 2:
-        print("Usage: python png_to_icns.py <input.png> [output.icns] [--no-padding]")
+        print("Usage: python create_icns.py <input.png> [output.icns] [--no-padding]")
         print("\nExample:")
-        print("  python png_to_icns.py app_icon.png")
-        print("  python png_to_icns.py app_icon.png custom_name.icns")
-        print("  python png_to_icns.py app_icon.png --no-padding")
+        print("  python create_icns.py app_icon.png")
+        print("  python create_icns.py app_icon.png custom_name.icns")
+        print("  python create_icns.py app_icon.png --no-padding")
         print("\nBy default, adds macOS-style transparent padding (9.765625% on each side).")
         print("Use --no-padding to disable this behavior.")
         sys.exit(1)
