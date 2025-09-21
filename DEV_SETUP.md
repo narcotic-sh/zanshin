@@ -4,7 +4,7 @@ This guide covers how to get Zanshin up and running for development.
 It is also applicable for users trying to get Zanshin running on Windows (through WSL) and Linux. Zanshin is currently only available in packaged form for macOS (Apple Silicon). Therefore, to get it running on Windows (WSL) and Linux, you'll need to run through these steps (for now). I hope to have packaging for Windows and Linux soon, to make easy one click installs possible.
 
 ## Hardware
-[Senko](https://github.com/narcotic-sh/senko) is the diarization pipeline that powers Zanshin. Currently it supports NVIDIA GPUs (`cuda`) and Mac GPUs (`mps`). If neither are present, it falls back to CPU (`cpu`) execution. Thefore, if you're on Windows (WSL) or Linux, it's best to have an NVIDIA GPU for fast diarization, or, if not, then at the very least a high-end modern CPU (ex. Ryzen 9 9950X). If you don't have an NVIDIA GPU, and only an older, slower CPU, Senko will still work, but diarization speed will be quite slow.
+[Senko](https://github.com/narcotic-sh/senko) is the diarization pipeline that powers Zanshin. Currently it supports NVIDIA GPUs (`cuda`) and Macs (CoreML). If neither are present, it falls back to CPU (`cpu`) execution. Thefore, if you're on Windows (WSL) or Linux, it's best to have an NVIDIA GPU for fast diarization, or, if not, then at the very least a high-end modern CPU (ex. Ryzen 9 9950X). If you don't have an NVIDIA GPU, and only an older, slower CPU, Senko will still work, but diarization speed will be quite slow.
 
 Support for Intel and AMD GPUs is coming soon.
 
@@ -44,7 +44,7 @@ uv pip install -r requirements.txt "git+https://github.com/narcotic-sh/senko.git
 # For NVIDIA GPUs with CUDA compute capability < 7.5 (~GTX 10 series and older)
 uv pip install -r requirements.txt "git+https://github.com/narcotic-sh/senko.git[nvidia-old]"
 
-# For Macs (mps) and CPU (cpu) execution on all other platforms
+# For Mac (macOS 14+) and CPU execution on all other platforms
 uv pip install -r requirements.txt "git+https://github.com/narcotic-sh/senko.git"
 ```
 For NVIDIA, make sure the installed driver is CUDA 12 capable (should see `CUDA Version: 12.x` in the top right of `nvidia-smi`)

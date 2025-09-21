@@ -8,12 +8,12 @@ if [[ $(uname -m) != "arm64" ]]; then
     exit 1
 fi
 
-# Check macOS version (requires 12.3 or later for MPS support)
+# Check macOS version (requires 14 or later)
 MACOS_VERSION=$(sw_vers -productVersion)
-REQUIRED_VERSION="12.3"
+REQUIRED_VERSION="14.0"
 if [[ $(printf '%s\n' "$REQUIRED_VERSION" "$MACOS_VERSION" | sort -V | head -n1) != "$REQUIRED_VERSION" ]]; then
     echo "Error: Zanshin requires macOS $REQUIRED_VERSION or later. Current version: $MACOS_VERSION"
-    osascript -e "display dialog \"Zanshin requires macOS $REQUIRED_VERSION or later for PyTorch MPS support.\\n\\nYour current macOS version is $MACOS_VERSION.\\n\\nPlease update your system and try again.\" buttons {\"OK\"} default button \"OK\" with icon stop with title \"Zanshin Installer\""
+    osascript -e "display dialog \"Zanshin requires macOS $REQUIRED_VERSION or later.\\n\\nYour current macOS version is $MACOS_VERSION.\\n\\nPlease update your system and try again.\" buttons {\"OK\"} default button \"OK\" with icon stop with title \"Zanshin Installer\""
     exit 1
 fi
 

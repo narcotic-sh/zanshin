@@ -1,5 +1,6 @@
 import subprocess
 import json
+import sys
 import os
 import shutil
 from pathlib import Path
@@ -173,6 +174,37 @@ def clean_directory(directory_path, keep_items):
             shutil.rmtree(item_path)
 
 #############################################################################################################################
+# get_curr_version()
+#############################################################################################################################
+
+def get_curr_version(root):
+    version_file = Path(root) / 'zanshin' / 'VERSION'
+    with open(version_file, 'r') as f:
+        return f.read().strip()
+
+#############################################################################################################################
+# is_old_zanshin()
+#############################################################################################################################
+
+def is_old_zanshin(version):
+    try:
+        # Parse version string (expected format: YYYY.M.D)
+        parts = version.split('.')
+        if len(parts) != 3:
+            # Unexpected format, assume old version to be safe
+            return True
+
+        current_version = [int(parts[0]), int(parts[1]), int(parts[2])]
+        target_version = [2025, 9, 16]
+
+        # Simple lexicographic comparison
+        return current_version <= target_version
+
+    except (FileNotFoundError, ValueError, IndexError):
+        # If we can't read or parse the version, assume it's old to be safe
+        return True
+
+#############################################################################################################################
 # main()
 #############################################################################################################################
 
@@ -201,6 +233,17 @@ if __name__ == '__main__':
     # /Applications/Zanshin.app
     old_app_bundle = '/Applications/Zanshin.app'
     new_app_bundle = (Path(update_dir) / 'Zanshin.app').as_posix()
+
+    # Old Zanshin version checking
+    old_zanshin_marker = Path(root) / 'OLD_ZANSHIN'
+    marker_exists = os.path.exists(old_zanshin_marker.as_posix())
+    version_is_old = is_old_zanshin(get_curr_version(root))
+    if marker_exists or version_is_old:
+        if version_is_old and not marker_exists:
+            old_zanshin_marker.touch()
+        shutil.rmtree(update_dir)
+        marker_manager.clean_all_markers()
+        sys.exit()
 
     # Get version of update, update type
     info_file = (Path(update_dir) / 'info.json').as_posix()

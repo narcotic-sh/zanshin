@@ -907,7 +907,7 @@ def main(dev_mode=False, no_browser=False, first_run=False, port=1776):
         print("Update checker thread completed - update has been prepared")
 
     # Check for updates only if on macOS, not in dev mode, and ~/Library/Application Support/Zanshin exists
-    if config.RUNNING_DARWIN and not dev_mode and os.path.exists(app_support):
+    if config.RUNNING_DARWIN and not dev_mode and os.path.exists(app_support) and not config.OLD_ZANSHIN:
         update_checker_thread = threading.Thread(target=update_checker_thread_func, daemon=True)
         update_checker_thread.start()
 

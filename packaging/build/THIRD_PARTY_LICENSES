@@ -63,28 +63,26 @@ Each package has its own folder named [package-name]-[version].dist-info contain
 
 Here is a list of the installed packages:
 
-    Flask                 hdbscan                   python-engineio
-    Flask-SocketIO        humanfriendly             python-socketio
-    Jinja2                idna                      pyzmq
-    MarkupSafe            imageio                   requests
-    PyYAML                itsdangerous              scikit-learn
-    Werkzeug              joblib                    scipy
-    av                    llvmlite                  senko (https://github.com/narcotic-sh/senko)
-    bidict                mpmath                    silero-vad
-    blinker               mutagen                   simple-websocket
-    certifi               networkx                  soundfile
-    cffi                  numba                     sympy
-    charset-normalizer    numpy                     termcolor
-    click                 onnxruntime               threadpoolctl
-    coloredlogs           opencv-python             torch
-    colour-science        packaging                 torchaudio
-    ffmpeg-python         pillow                    tqdm
-    filelock              protobuf                  typing_extensions
-    flask-cors            psutil                    umap-learn
-    flatbuffers           pycparser                 urllib3
-    fsspec                pynndescent               wsproto
-    future                pyobjc-core               xxhash
-    h11                   pyobjc-framework-Cocoa    yt-dlp
+    Flask                 h11              pyobjc-framework-Cocoa
+    Flask-SocketIO        hdbscan          python-engineio
+    Jinja2                idna             python-socketio
+    MarkupSafe            imageio          pyzmq
+    PyYAML                itsdangerous     requests
+    Werkzeug              joblib           scikit-learn
+    attrs                 llvmlite         scipy
+    av                    mpmath           senko (https://github.com/narcotic-sh/senko)
+    bidict                mutagen          simple-websocket
+    blinker               numba            soundfile
+    cattrs                numpy            sympy
+    certifi               opencv-python    termcolor
+    cffi                  packaging        threadpoolctl
+    charset-normalizer    pillow           tqdm
+    click                 protobuf         typing_extensions
+    colour-science        psutil           umap-learn
+    coremltools           pyaml            urllib3
+    ffmpeg-python         pycparser        wsproto
+    flask-cors            pynndescent      xxhash
+    future                pyobjc-core
 
 =================================================================================================
     FFmpeg

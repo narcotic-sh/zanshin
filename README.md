@@ -30,7 +30,7 @@ Visit the [website](https://zanshin.sh) for demo videos and screenshots of the U
 残心 / Zanshin is powered by the very fast [Senko](https://github.com/narcotic-sh/senko) speaker diarization pipeline.
 
 ## Installation
-Zanshin is currently only available in packaged form for macOS 12.3+ on Apple Silicon.
+Zanshin is currently only available in packaged form for macOS 14+ on Apple Silicon.
 
 Download from the [website](https://zanshin.sh) or Github [Releases](https://github.com/narcotic-sh/zanshin/releases/latest).
 
@@ -38,12 +38,13 @@ For Windows and Linux, packaging is not available yet and will be coming soon. I
 
 ## macOS FAQ
 <details>
-<summary>How do I update Zanshin?</summary>
+<summary>Can I backup and restore all the items in my Zanshin Vault?</summary>
 <br>
-Zanshin on macOS comes with an auto-updater built-in. It checks periodically if there's an update available while the app is running. If there is, it fetches it and decompresses it. Then, when you quit the app, it installs the update, so that the next time you run the app, you'll be on the latest version.
-<br>
-<br>
-You can also download the latest Zanshin <code>.pkg</code> file and simply install it. That will update Zanshin as well (won't wipe the items in your Vault).
+Yes, simply backup the following file:
+<ul>
+  <li><code>~/Library/Application Support/Zanshin/zanshin/media.db</code></li>
+</ul>
+To restore it (like after you install Zanshin on a new Mac, for example), simply move the file into that same location.
 </details>
 <details>
 <summary>How do I uninstall Zanshin?</summary>
@@ -53,15 +54,6 @@ Delete two items:
   <li><code>Zanshin.app</code> in <code>/Applications</code></li>
   <li>The folder <code>~/Library/Application Support/Zanshin</code></li>
 </ul>
-</details>
-<details>
-<summary>Can I backup and restore all the items in my Zanshin Vault?</summary>
-<br>
-Yes, simply backup the following file:
-<ul>
-  <li><code>~/Library/Application Support/Zanshin/zanshin/media.db</code></li>
-</ul>
-To restore it (like after you install Zanshin on a new Mac, for example), simply move the file into that same location.
 </details>
 
 ## Community, Support, Future Plans

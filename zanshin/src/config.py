@@ -25,6 +25,8 @@ except:
     RUNNING_WSL = False
 
 IS_PACKAGED = 'Library/Application Support' in SCRIPT_DIR
+OLD_ZANSHIN = IS_PACKAGED and os.path.exists(os.path.join(ROOT, 'OLD_ZANSHIN'))
+
 THIRD_PARTY_LICENSES_PATH = os.path.join(ROOT, 'THIRD_PARTY_LICENSES') if IS_PACKAGED else os.path.join(os.path.dirname(ROOT), 'THIRD_PARTY_LICENSES')
 
 THIRD_PARTY_LICENSES_PACKAGED_PATH = os.path.join(os.path.dirname(ROOT), 'packaging', 'build', 'THIRD_PARTY_LICENSES') if not IS_PACKAGED else os.path.join(ROOT, 'THIRD_PARTY_LICENSES')
