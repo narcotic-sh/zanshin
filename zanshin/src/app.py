@@ -15,10 +15,6 @@ from flask_cors import CORS
 from flask import send_from_directory
 import zmq
 from termcolor import colored
-import warnings
-warnings.filterwarnings("ignore", message=".*Matplotlib.*")
-warnings.filterwarnings("ignore", message=".*force_all_finite.*", category=FutureWarning)
-warnings.filterwarnings("ignore", message=".*torchaudio.*", category=UserWarning) # Suppress torchaudio deprecation warnings
 
 from diarize_loop import diarize_loop
 from metadata_loop import metadata_loop
