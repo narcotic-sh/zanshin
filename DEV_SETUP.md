@@ -51,7 +51,7 @@ For NVIDIA, make sure the installed driver is CUDA 12 capable (should see `CUDA 
 
 Install `yt-dlp` pre-release version
 ```
-uv pip install --pre yt-dlp
+uv pip install --pre "yt-dlp[default]"
 ```
 Build the frontend code
 ```
@@ -81,7 +81,7 @@ git pull
 cd zanshin/zanshin
 source .venv/bin/activate
 uv pip install --upgrade -r requirements.txt "git+https://github.com/narcotic-sh/senko.git[nvidia|nvidia-old]"
-uv pip install --upgrade --pre yt-dlp
+uv pip install --upgrade --pre "yt-dlp[default]"
 
 # Rebuild the frontend code
 cd src/ui; bun install; bun run build; cd -

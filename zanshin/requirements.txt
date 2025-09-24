@@ -18,4 +18,4 @@ pyobjc-framework-cocoa; sys_platform == "darwin"
 
 # Separate installs
 # git+https://github.com/narcotic-sh/senko.git[nvidia|nvidia-old]
-# yt-dlp (pre-release version)
+# yt-dlp[default] (pre-release version)

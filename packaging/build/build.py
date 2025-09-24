@@ -10,7 +10,7 @@ from pathlib import Path
 import subprocess
 import argparse
 import shutil
-from build_misc import download_file, get_and_install_uv, build_pkg, create_zanshin_update, update_version_plist, delete_path, get_ffmpeg_download_links
+from build_misc import download_file, get_and_install_github_release, build_pkg, create_zanshin_update, update_version_plist, delete_path, get_ffmpeg_download_links
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='A script that requires a version argument')
@@ -135,7 +135,29 @@ if __name__ == '__main__':
 
         if not os.path.exists(uv_folder):
             os.makedirs(uv_folder)
-            get_and_install_uv(uv_folder)
+            get_and_install_github_release(
+                api_url="https://api.github.com/repos/astral-sh/uv/releases/latest",
+                asset_name="uv-aarch64-apple-darwin.tar.gz",
+                cwd=uv_folder,
+                tool_name="uv",
+                flatten_extracted_dir=True
+            )
+
+        ################
+        ## Fetch deno ##
+        ################
+
+        deno_folder = Path(third_party) / "deno"
+
+        if not os.path.exists(deno_folder):
+            os.makedirs(deno_folder)
+            get_and_install_github_release(
+                api_url="https://api.github.com/repos/denoland/deno/releases/latest",
+                asset_name="deno-aarch64-apple-darwin.zip",
+                cwd=deno_folder,
+                tool_name="deno",
+                flatten_extracted_dir=False
+            )
 
         ###################################
         ## Build SvelteKit frontend code ##
@@ -171,7 +193,7 @@ if __name__ == '__main__':
             subprocess.run([
                 'uv', '-q', 'pip', 'install',
                 '--python', './python_interpreter/cpython-3.11.13-macos-aarch64-none/bin/python',
-                '--pre', 'yt-dlp',
+                '--pre', 'yt-dlp[default]',
                 '--break-system-packages'
             ], cwd=zanshin, check=True)
 

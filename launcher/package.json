@@ -18,10 +18,10 @@
     },
     "devDependencies": {
         "@sveltejs/adapter-static": "^3.0.9",
-        "@sveltejs/kit": "^2.42.2",
+        "@sveltejs/kit": "^2.43.4",
         "@sveltejs/vite-plugin-svelte": "^5.1.1",
-        "svelte": "^5.39.3",
-        "svelte-check": "^4.3.1",
+        "svelte": "^5.39.6",
+        "svelte-check": "^4.3.2",
         "typescript": "~5.6.3",
         "vite": "^6.3.6",
         "@tauri-apps/cli": "^2.8.4"

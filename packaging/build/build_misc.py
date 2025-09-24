@@ -100,71 +100,118 @@ def download_file(url, directory, filename=None):
         f.write(response.content)
     return file_path.as_posix()
 
-def get_and_install_uv(cwd=None):
+def get_and_install_github_release(api_url, asset_name, cwd=None, tool_name="tool", flatten_extracted_dir=False):
+    """
+    Download and install a tool from GitHub releases.
+
+    Args:
+        api_url: GitHub API URL for the latest release (e.g., "https://api.github.com/repos/owner/repo/releases/latest")
+        asset_name: Name of the asset file to download (e.g., "uv-aarch64-apple-darwin.tar.gz")
+        cwd: Directory where the tool will be installed
+        tool_name: Name of the tool for logging purposes
+        flatten_extracted_dir: If True and a subdirectory is extracted, move its contents up one level
+
+    Returns:
+        Path object of the installation directory
+    """
     cwd_path = Path(cwd)
 
     # Fetch the latest release information from the GitHub API
-    response = requests.get("https://api.github.com/repos/astral-sh/uv/releases/latest")
+    response = requests.get(api_url)
     response.raise_for_status()
 
     # Parse the JSON response
     release_data = response.json()
 
-    # Find the aarch64-apple-darwin asset
+    # Find the specified asset
     download_url = None
     for asset in release_data.get("assets", []):
-        if asset.get("name") == "uv-aarch64-apple-darwin.tar.gz":
+        if asset.get("name") == asset_name:
             download_url = asset.get("browser_download_url")
             break
 
+    if not download_url:
+        exit_on_error(f"Could not find {asset_name} in the latest release")
+
     # Get the version for better naming
     version = release_data.get("tag_name", "latest")
-    print(f"Found uv version {version}")
+    print(f"Found {tool_name} version {version}")
 
-    # Download the tarball
-    tarball_path = cwd_path / f"uv-aarch64-apple-darwin-{version}.tar.gz"
-    print(f"Downloading to {tarball_path}...")
+    # Determine file extension and download path
+    file_ext = '.tar.gz' if asset_name.endswith('.tar.gz') else ('.' + asset_name.split('.')[-1])
+
+    download_path = cwd_path / f"{tool_name}-{version}{file_ext}"
+    print(f"Downloading to {download_path}...")
 
     with requests.get(download_url, stream=True) as r:
         r.raise_for_status()
-        with open(tarball_path, 'wb') as f:
+        with open(download_path, 'wb') as f:
             shutil.copyfileobj(r.raw, f)
 
-    # Extract the tarball
-    subprocess.run(
-        ["tar", "-xf", str(tarball_path)],
-        cwd=cwd,
-        check=True,
-        capture_output=True,
-        text=True
-    )
+    # Extract based on file type
+    if file_ext == '.tar.gz':
+        # Extract tarball
+        subprocess.run(
+            ["tar", "-xf", str(download_path)],
+            cwd=cwd,
+            check=True,
+            capture_output=True,
+            text=True
+        )
+    elif file_ext == '.zip':
+        # Extract zip file
+        subprocess.run(
+            ["unzip", "-q", str(download_path), "-d", str(cwd_path)],
+            check=True,
+            capture_output=True,
+            text=True
+        )
+    else:
+        exit_on_error(f"Unsupported archive format: {file_ext}")
 
-    # Get the extracted directory
-    extracted_dir = cwd_path / "uv-aarch64-apple-darwin"
+    # If flatten_extracted_dir is True, move contents from extracted subdirectory
+    if flatten_extracted_dir:
+        # Expected directory name is the asset name without the extension
+        extracted_dir_name = asset_name.replace(file_ext, '')
+        extracted_dir = cwd_path / extracted_dir_name
 
-    # Move all contents from the extracted directory to cwd
-    for item in os.listdir(extracted_dir):
-        source = extracted_dir / item
-        destination = cwd_path / item
+        if extracted_dir.exists():
+            # Move all contents from the extracted directory to cwd
+            for item in os.listdir(extracted_dir):
+                source = extracted_dir / item
+                destination = cwd_path / item
 
-        # Handle file overwrite
-        if destination.exists():
-            if destination.is_dir():
-                shutil.rmtree(destination)
-            else:
-                os.remove(destination)
+                # Handle file overwrite
+                if destination.exists():
+                    if destination.is_dir():
+                        shutil.rmtree(destination)
+                    else:
+                        os.remove(destination)
 
-        # Move the file/directory
-        if source.is_dir():
-            shutil.copytree(source, destination)
-        else:
-            shutil.copy2(source, destination)
+                # Move the file/directory
+                if source.is_dir():
+                    shutil.copytree(source, destination)
+                else:
+                    shutil.copy2(source, destination)
 
-    # Remove the extracted directory
-    shutil.rmtree(extracted_dir)
+            # Remove the extracted directory
+            shutil.rmtree(extracted_dir)
 
-    # Remove the tarball
-    os.remove(tarball_path)
+    # Make all executables in the directory executable
+    for file_path in cwd_path.iterdir():
+        if file_path.is_file():
+            # Check if file might be an executable (no extension or common executable names)
+            file_name = file_path.name
+            if not '.' in file_name or file_name in ['uv', 'uvx', 'deno']:
+                try:
+                    os.chmod(file_path, 0o755)
+                except:
+                    pass  # Ignore permission errors
+
+    # Remove the downloaded archive
+    os.remove(download_path)
+
+    print(f"Successfully installed {tool_name} {version}")
 
     return cwd_path
 

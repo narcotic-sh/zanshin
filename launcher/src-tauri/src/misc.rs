@@ -91,7 +91,7 @@ pub fn run_uv_pip_install(app_support: &std::path::Path) {
             "pip", "install",
             "--upgrade", "--pre",
             "--python", &python_path_str,
-            "yt-dlp",
+            "yt-dlp[default]",
             "--break-system-packages"
         ])
         .status();
