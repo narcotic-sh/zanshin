@@ -28,7 +28,7 @@ try:
 except:
     RUNNING_WSL = False
 
-OLD_ZANSHIN = IS_PACKAGED and os.path.exists(os.path.join(ROOT, 'OLD_ZANSHIN'))
+OLD_ZANSHIN = IS_PACKAGED and os.path.exists(os.path.join(os.path.dirname(ROOT), 'OLD_ZANSHIN'))
 
 THIRD_PARTY_LICENSES_PATH = os.path.join(ROOT, 'THIRD_PARTY_LICENSES') if IS_PACKAGED else os.path.join(os.path.dirname(ROOT), 'THIRD_PARTY_LICENSES')
 
