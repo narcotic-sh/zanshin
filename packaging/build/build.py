@@ -10,7 +10,7 @@ from pathlib import Path
 import subprocess
 import argparse
 import shutil
-from build_misc import download_file, get_and_install_github_release, build_pkg, create_zanshin_update, update_version_plist, delete_path, get_ffmpeg_download_links
+from build_misc import download_file, get_and_install_github_release, build_pkg, create_zanshin_update, update_version_plist, delete_path
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='A script that requires a version argument')
@@ -113,8 +113,10 @@ if __name__ == '__main__':
         if not ffmpeg_folder.exists():
             ffmpeg_folder.mkdir(parents=True)
 
-        # Fetch latest ffmpeg, ffprobe binaries
-        binaries = get_ffmpeg_download_links()
+        binaries = {
+            'ffmpeg': 'https://www.osxexperts.net/ffmpeg80arm.zip',
+            'ffprobe': 'https://www.osxexperts.net/ffprobe80arm.zip'
+        }
 
         def dl_unzip_bin(name, url):
             zip = download_file(url, ffmpeg_folder.as_posix())
