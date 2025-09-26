@@ -472,10 +472,15 @@
                 <div style="pointer-events: auto; text-align: center;">
                     <p>Processing failed!</p>
                     <p style="max-width: 800px; padding: 0 20px; text-align: center;">
-                        {#if media_data?.error.type === 'bot'}
-                            YouTube bot detection trigerred <a href="/settings?highlight=cookies_from_browser" style="color: var(--accent)">[Fix]</a>
-                        {:else if media_data?.error.type === 'age_restricted'}
-                            Age restricted video <a href="/settings?highlight=cookies_from_browser" style="color: var(--accent)">[Fix]</a>
+                        {#if media_data?.error.type === 'bot' || media_data?.error.type === 'age_restricted'}
+                            {#if media_data?.error.type === 'bot'}
+                                YouTube bot detection triggered
+                            {:else}
+                                Age restricted video
+                            {/if}
+                            <a href="/settings?highlight=cookies_from_browser" style="color: var(--accent)">[Fix]</a><br><br>
+                            If cookies_from_browser still doesn't fix this, it might be yt-dlp being out of date causing the issue.<br>
+                            In that case, restart Zanshin so that the YouTube downloader can update (if an update exists), and then try again.
                         {:else if media_data?.error.type === 'interrupted'}
                             Zanshin was shut down during processing
                         {:else}

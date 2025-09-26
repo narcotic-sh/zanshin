@@ -273,7 +273,7 @@ def download_youtube_audio(id, video_id, output_dir, socket):
             error_str = str(e)
 
             # Age restricted video
-            if 'age' in error_str.lower() and 'sign in' in error_str.lower():
+            if check_error_str(error_str, ['age', 'sign in']):
                 error = {
                     'type': 'age_restricted',
                     'full_str': extract_yt_error(error_str)
@@ -281,7 +281,7 @@ def download_youtube_audio(id, video_id, output_dir, socket):
                 break
 
             # Bot guard triggered
-            elif 'bot' in error_str.lower() and 'sign in' in error_str.lower():
+            elif check_error_str(error_str, ['bot', 'sign in'], ['403', 'forbidden']):
                 error = {
                     'type': 'bot',
                     'full_str': extract_yt_error(error_str)
@@ -289,7 +289,7 @@ def download_youtube_audio(id, video_id, output_dir, socket):
                 break
 
             # Specific format not available error - try fallback once and exit
-            elif 'requested format is not available' in error_str.lower():
+            elif check_error_str(error_str, 'requested format is not available'):
                 broadcast_active_job_status(socket, 'progress_update', {
                     'id': id,
                     'stage': 'Audio-only format not available, trying low-res video+audio...'
@@ -383,3 +383,29 @@ def decompress_audio(input_file, output_file):
         return output_file
     except ffmpeg.Error:
         return None
+
+#######################################################################
+#   check_error_str
+#######################################################################
+
+def check_error_str(error_str, *conditions):
+    """
+    # Check if ('bot' AND 'sign in') OR ('403' AND 'forbidden') in error_str.lower()
+    check_error_str(error_str, ['bot', 'sign in'], ['403', 'forbidden'])
+
+    # Check if 'requested format is not available' in error_str.lower()
+    check_error_str(error_str, 'requested format is not available')
+    """
+    error_lower = error_str.lower()
+
+    for condition in conditions:
+        if isinstance(condition, str):
+            # Single string - just check if it's present
+            if condition.lower() in error_lower:
+                return True
+        elif isinstance(condition, (list, tuple)):
+            # List/tuple - all items must be present
+            if all(term.lower() in error_lower for term in condition):
+                return True
+
+    return False
