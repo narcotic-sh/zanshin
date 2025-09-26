@@ -1,7 +1,6 @@
 from pathlib import Path
 import re
 import requests
-from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import os
 import subprocess

@@ -1,5 +1,5 @@
 # Have uv and bun installed
-# uv pip install requests beautifulsoup4
+# uv pip install requests
 # brew install cmake fd gnu-tar
 
 # If new Python packages are added, make sure to run print_packages.py and update them in THIRD_PARTY_LICENSES:
