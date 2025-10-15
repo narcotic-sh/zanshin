@@ -15,7 +15,7 @@ __MACOSX
 ./src/misc
 
 # Python development venv
-./env/
+./env
 ./.venv
 
 # Config files
