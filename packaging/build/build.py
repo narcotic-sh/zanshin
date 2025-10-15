@@ -18,12 +18,14 @@ if __name__ == '__main__':
     parser.add_argument('--debug', action='store_true', help='Enable debug mode')
     parser.add_argument('--notarize', action='store_true', help='Submit built pkg for notarization')
     parser.add_argument('--clean', action='store_true', help='Clean build artifacts before building')
+    parser.add_argument('--skip-update-tarballs', action='store_true', help='Skip creating delta and full update tarballs')
     args = parser.parse_args()
 
     version = args.version
     debug = args.debug
     notarize = args.notarize
     clean = args.clean
+    skip_update_tarballs = args.skip_update_tarballs
 
     ###########
     ## Paths ##
@@ -247,74 +249,77 @@ if __name__ == '__main__':
     print('Building .pkg')
     build_pkg(build, tarball, version, notarize)
 
-    #######################
-    ## Build full update ##
-    #######################
+    if not skip_update_tarballs:
+        #######################
+        ## Build full update ##
+        #######################
 
-    # If full update tarball doesn't exist
-    tarball_full = (Path(dist) / "zanshin_full_update.tar.xz").as_posix()
-    if not os.path.exists(tarball_full):
-        print('Creating full update tarball')
+        # If full update tarball doesn't exist
+        tarball_full = (Path(dist) / "zanshin_full_update.tar.xz").as_posix()
+        if not os.path.exists(tarball_full):
+            print('Creating full update tarball')
 
-        # Full update will contain everything except whatever is ignored in .tarignore
-        tar_cmd = f"gtar -cf - --exclude-from=zanshin/.tarignore --exclude=python_interpreter -C zanshin --transform 's,^./,zanshin/,' . | xz -T0 {'-9e' if not debug else ''} > ./packaging/dist/zanshin_full_update.tar.xz"
-        subprocess.run(tar_cmd, shell=True, cwd=root)
+            # Full update will contain everything except whatever is ignored in .tarignore
+            tar_cmd = f"gtar -cf - --exclude-from=zanshin/.tarignore --exclude=python_interpreter -C zanshin --transform 's,^./,zanshin/,' . | xz -T0 {'-9e' if not debug else ''} > ./packaging/dist/zanshin_full_update.tar.xz"
+            subprocess.run(tar_cmd, shell=True, cwd=root)
 
-    info = {
-        "version": version,
-        "type": "full"
-    }
+        info = {
+            "version": version,
+            "type": "full"
+        }
 
-    create_zanshin_update(
-        tarball_path=os.path.join(build, "../dist/zanshin_full_update.tar.xz"),
-        app_path=os.path.join(build, "../dist/Zanshin.app"),
-        update_script_path=os.path.join(build, "update.py"),
-        info_dict=info,
-        debug=debug,
-        output_path=os.path.join(build, f"../dist/zanshin_{version}_full_update.tar.xz")
-    )
+        create_zanshin_update(
+            tarball_path=os.path.join(build, "../dist/zanshin_full_update.tar.xz"),
+            app_path=os.path.join(build, "../dist/Zanshin.app"),
+            update_script_path=os.path.join(build, "update.py"),
+            info_dict=info,
+            debug=debug,
+            output_path=os.path.join(build, f"../dist/zanshin_{version}_full_update.tar.xz")
+        )
 
-    os.remove(os.path.join(dist, "zanshin_full_update.tar.xz"))
+        os.remove(os.path.join(dist, "zanshin_full_update.tar.xz"))
 
-    ########################
-    ## Build delta update ##
-    ########################
+        ########################
+        ## Build delta update ##
+        ########################
 
-    # If delta update tarball doesn't exist
-    tarball_delta = (Path(dist) / "zanshin_delta_update.tar.xz").as_posix()
-    if not os.path.exists(tarball_delta):
-        print('Creating delta update tarball')
+        # If delta update tarball doesn't exist
+        tarball_delta = (Path(dist) / "zanshin_delta_update.tar.xz").as_posix()
+        if not os.path.exists(tarball_delta):
+            print('Creating delta update tarball')
 
-        # Get all items in the zanshin directory
-        all_items = os.listdir(zanshin)
+            # Get all items in the zanshin directory
+            all_items = os.listdir(zanshin)
 
-        # Delta update will only contain src directory, requirements.txt, VERSION file, THIRD_PARTY_LICENSES file
-        items_to_keep = ['src', 'requirements.txt', 'VERSION', 'THIRD_PARTY_LICENSES']
-        items_to_exclude = [item for item in all_items if item not in items_to_keep]
+            # Delta update will only contain src directory, requirements.txt, VERSION file, THIRD_PARTY_LICENSES file
+            items_to_keep = ['src', 'requirements.txt', 'VERSION', 'THIRD_PARTY_LICENSES']
+            items_to_exclude = [item for item in all_items if item not in items_to_keep]
 
-        # Build the tar command with dynamic excludes
-        exclude_args = " ".join([f"--exclude={item}" for item in items_to_exclude])
+            # Build the tar command with dynamic excludes
+            exclude_args = " ".join([f"--exclude={item}" for item in items_to_exclude])
 
-        tar_cmd = f"gtar -cf - --exclude-from=zanshin/.tarignore {exclude_args} -C zanshin --transform 's,^./,zanshin/,' . | xz -T0 {'-9e' if not debug else ''} > ./packaging/dist/zanshin_delta_update.tar.xz"
+            tar_cmd = f"gtar -cf - --exclude-from=zanshin/.tarignore {exclude_args} -C zanshin --transform 's,^./,zanshin/,' . | xz -T0 {'-9e' if not debug else ''} > ./packaging/dist/zanshin_delta_update.tar.xz"
 
-        # Run the command
-        subprocess.run(tar_cmd, shell=True, cwd=root)
+            # Run the command
+            subprocess.run(tar_cmd, shell=True, cwd=root)
 
-    info = {
-        "version": version,
-        "type": "delta"
-    }
+        info = {
+            "version": version,
+            "type": "delta"
+        }
 
-    create_zanshin_update(
-        tarball_path=os.path.join(build, "../dist/zanshin_delta_update.tar.xz"),
-        app_path=os.path.join(build, "../dist/Zanshin.app"),
-        update_script_path=os.path.join(build, "update.py"),
-        info_dict=info,
-        debug=debug,
-        output_path=os.path.join(build, f"../dist/zanshin_{version}_delta_update.tar.xz")
-    )
+        create_zanshin_update(
+            tarball_path=os.path.join(build, "../dist/zanshin_delta_update.tar.xz"),
+            app_path=os.path.join(build, "../dist/Zanshin.app"),
+            update_script_path=os.path.join(build, "update.py"),
+            info_dict=info,
+            debug=debug,
+            output_path=os.path.join(build, f"../dist/zanshin_{version}_delta_update.tar.xz")
+        )
 
-    os.remove(os.path.join(dist, "zanshin_delta_update.tar.xz"))
+        os.remove(os.path.join(dist, "zanshin_delta_update.tar.xz"))
+    else:
+        print('Skipping update tarballs')
 
     #############
     ## Cleanup ##
