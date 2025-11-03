@@ -14,11 +14,6 @@
 
 ---
 
-> [!IMPORTANT]
-> Due to an [issue](https://github.com/yt-dlp/yt-dlp/issues/14680) with `yt-dlp`, YouTube audio downloads within Zanshin currently might fail or have degraded quality, especially if `cookies_from_browser` is enabled.
->
-> A fix to restore normal download functionality is currently [in progress](https://github.com/yt-dlp/yt-dlp/pull/14157). The fix introduces a mandatory requirement of an external JavaScript runtime such as Deno, explained in more depth in an earlier [announcement](https://github.com/yt-dlp/yt-dlp/issues/14404). Zanshin started bundling Deno following this announcement so that, when the [PR](https://github.com/yt-dlp/yt-dlp/pull/14157) is merged, `yt-dlp` downloads within Zanshin will have access to Deno right away.
-
 A media player with a novel interface allowing you to navigate by speaker.
 
 - Visualize who speaks when & for how long
