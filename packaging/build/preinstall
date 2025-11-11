@@ -30,4 +30,12 @@ if [ -d "$APP_PATH" ]; then
     rm -rf "$APP_PATH"
 fi
 
+# Remove cache directory (~/.cache/senko) if it exists
+INSTALLER_USER=$(stat -f "%Su" /dev/console)
+CACHE_DIR="/Users/$INSTALLER_USER/.cache/senko"
+if [ -d "$CACHE_DIR" ]; then
+    echo "Removing cache directory at $CACHE_DIR..."
+    rm -rf "$CACHE_DIR"
+fi
+
 exit 0
