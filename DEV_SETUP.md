@@ -33,7 +33,7 @@ cd zanshin/zanshin
 ```
 Create and activate a Python virtual environment
 ```
-uv venv --python 3.11.13 .venv
+uv venv --python 3.13 .venv
 source .venv/bin/activate
 ```
 Install the dependancies (run one of the following, whichever one applies to your system)

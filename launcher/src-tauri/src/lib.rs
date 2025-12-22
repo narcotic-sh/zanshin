@@ -165,7 +165,7 @@ pub fn run() {
                     let python_interpreter = app_support
                         .join("zanshin")
                         .join("python_interpreter")
-                        .join("cpython-3.11.13-macos-aarch64-none")
+                        .join("cpython-3.13.11-macos-aarch64-none")
                         .join("bin")
                         .join("python");
 

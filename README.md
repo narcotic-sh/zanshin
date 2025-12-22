@@ -68,5 +68,5 @@ For setting up Zanshin for development, see [`DEV_SETUP.md`](/DEV_SETUP.md).
 If you face issues while running Zanshin and are a bit technically savvy, you can run Zanshin from the terminal and see logs like so:
 ```
 cd ~/Library/Application\ Support/Zanshin/zanshin
-./python_interpreter/cpython-3.11.13-macos-aarch64-none/bin/python src/app.py
+./python_interpreter/cpython-3.13.11-macos-aarch64-none/bin/python src/app.py
 ```

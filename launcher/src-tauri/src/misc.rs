@@ -75,7 +75,7 @@ pub fn pathbuf_to_string(path: &PathBuf) -> Result<String, String> {
 
 pub fn run_uv_pip_install(app_support: &std::path::Path) {
     let uv_path = app_support.join("zanshin/third_party/uv/uv");
-    let python_path = app_support.join("zanshin/python_interpreter/cpython-3.11.13-macos-aarch64-none/bin/python");
+    let python_path = app_support.join("zanshin/python_interpreter/cpython-3.13.11-macos-aarch64-none/bin/python");
     let uv_path_str = pathbuf_to_string(&uv_path).unwrap();
     let python_path_str = pathbuf_to_string(&python_path).unwrap();
 
@@ -104,7 +104,7 @@ pub fn run_uv_pip_install(app_support: &std::path::Path) {
 */
 
 pub fn launch_python(app_support: &std::path::Path, first_run: bool) -> Child {
-    let interpreter_path = pathbuf_to_string(&app_support.join("zanshin/python_interpreter/cpython-3.11.13-macos-aarch64-none/bin/python")).unwrap();
+    let interpreter_path = pathbuf_to_string(&app_support.join("zanshin/python_interpreter/cpython-3.13.11-macos-aarch64-none/bin/python")).unwrap();
     let script_path = pathbuf_to_string(&app_support.join("zanshin/src/app.py")).unwrap();
 
     let mut command = Command::new(&interpreter_path);

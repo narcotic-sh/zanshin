@@ -183,12 +183,12 @@ if __name__ == '__main__':
             print('Installing Python interpreter & dependancies')
 
             # Install Python interpreter
-            subprocess.run(['uv', '-q', 'python', 'install', '-i', './python_interpreter', '3.11.13'], cwd=zanshin, check=True)
+            subprocess.run(['uv', '-q', 'python', 'install', '-i', './python_interpreter', '3.13.11'], cwd=zanshin, check=True)
 
             # Install dependancies and Senko
             subprocess.run([
                 'uv', '-q', 'pip', 'install',
-                '--python', './python_interpreter/cpython-3.11.13-macos-aarch64-none/bin/python',
+                '--python', './python_interpreter/cpython-3.13.11-macos-aarch64-none/bin/python',
                 '-r', 'requirements.txt', 'git+https://github.com/narcotic-sh/senko.git',
                 '--break-system-packages'
             ], cwd=zanshin, check=True)
@@ -196,7 +196,7 @@ if __name__ == '__main__':
             # Install yt-dlp (latest pre-release version)
             subprocess.run([
                 'uv', '-q', 'pip', 'install',
-                '--python', './python_interpreter/cpython-3.11.13-macos-aarch64-none/bin/python',
+                '--python', './python_interpreter/cpython-3.13.11-macos-aarch64-none/bin/python',
                 '--pre', 'yt-dlp[default]',
                 '--break-system-packages'
             ], cwd=zanshin, check=True)

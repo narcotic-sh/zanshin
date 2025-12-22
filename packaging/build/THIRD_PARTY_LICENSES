@@ -39,15 +39,15 @@ License text:
     SOFTWARE.
 
 =================================================================================================
-    Python 3.11.13
+    Python 3.13.11
 =================================================================================================
 
-This software includes Python 3.11.13 and its standard library.
+This software includes Python 3.13.11 and its standard library.
 
 Copyright (c) 2001-2023 Python Software Foundation; All Rights Reserved
 
 License: Python Software Foundation License Version 2 and license stack
-Full license text: ~/Library/Application Support/Zanshin/zanshin/python_interpreter/cpython-3.11.13-macos-aarch64-none/lib/python3.11/LICENSE.txt
+Full license text: ~/Library/Application Support/Zanshin/zanshin/python_interpreter/cpython-3.13.11-macos-aarch64-none/lib/python3.11/LICENSE.txt
 
 The complete Python license includes multiple licenses due to Python's
 development history (PSF, BeOpen, CNRI, CWI licenses). All required license
@@ -61,7 +61,7 @@ This application bundles a Python interpreter with various open source Python pa
 
 License information for each package can be found in the dist-info folders located at:
 
-    ~/Library/Application Support/Zanshin/zanshin/python_interpreter/cpython-3.11.13-macos-aarch64-none/lib/python3.11/site-packages/
+    ~/Library/Application Support/Zanshin/zanshin/python_interpreter/cpython-3.13.11-macos-aarch64-none/lib/python3.11/site-packages/
 
 Each package has its own folder named [package-name]-[version].dist-info containing its license file as well as possibly a third party licenses file.
 
