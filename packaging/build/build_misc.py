@@ -6,10 +6,7 @@ import os
 import subprocess
 import shutil
 import sys
-import json
-import tempfile
 import plistlib
-from pathlib import Path
 
 def delete_path(path):
     try:
@@ -293,56 +290,3 @@ def update_version_plist(plist_path, version):
         plistlib.dump(plist_data, fp)
 
     return True
-
-def create_zanshin_update(tarball_path, app_path, update_script_path, info_dict, debug, output_path="zanshin_update.tar.xz"):
-    try:
-        # Ensure paths are absolute
-        tarball_path = Path(tarball_path).absolute()
-        app_path = Path(app_path).absolute()
-        output_path = Path(output_path).absolute()
-
-        # Create a temporary file for info.json
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as temp_json:
-            json.dump(info_dict, temp_json, indent=2)
-            temp_json_path = temp_json.name
-            temp_json_filename = os.path.basename(temp_json_path)
-
-        # Build the gtar command with transforms to:
-        # 1. Rename files to their final names
-        # 2. Put everything inside an "update" directory
-        gtar_cmd = [
-            "gtar",
-            # First transform renames files to their desired names
-            "--transform", f"s|{os.path.basename(tarball_path)}|update.tar.xz|",
-            "--transform", f"s|{temp_json_filename}|info.json|",
-            # Second transform places everything in the update directory
-            "--transform", "s|^|update/|",
-            "-cf", "-",  # Output to stdout
-            "-C", str(os.path.dirname(tarball_path)), os.path.basename(tarball_path),             # Include delta update
-            "-C", str(os.path.dirname(app_path)), os.path.basename(app_path),                     # Include app bundle
-            "-C", str(os.path.dirname(update_script_path)), os.path.basename(update_script_path),
-            "-C", str(os.path.dirname(temp_json_path)), temp_json_filename                        # Include info.json
-        ]
-
-        # Compress with xz using maximum settings
-        if not debug:
-            xz_cmd = ["xz", "-T0", "-9e"]
-        else:
-            xz_cmd = ["xz", "-T0"]
-
-        # Create the archive with piping
-        with open(output_path, 'wb') as outfile:
-            tar_process = subprocess.Popen(gtar_cmd, stdout=subprocess.PIPE)
-            subprocess.run(xz_cmd, stdin=tar_process.stdout, stdout=outfile, check=True)
-            tar_process.stdout.close()
-            return_code = tar_process.wait()
-            if return_code != 0:
-                raise subprocess.CalledProcessError(return_code, gtar_cmd)
-
-        # Clean up temporary files
-        os.remove(temp_json_path)
-        print(f"Successfully created {output_path}")
-        return True
-    except Exception as e:
-        print(f"Error creating archive: {str(e)}")
-        return False

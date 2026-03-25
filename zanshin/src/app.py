@@ -22,7 +22,6 @@ import db
 import config
 import shared_dict
 import rust_comms
-from releases_manager import ZanshinReleaseManager
 from stream_local_file import stream_local_file
 from misc import (
     extract_video_id,
@@ -34,10 +33,8 @@ from misc import (
     get_filename,
     router_to_dealer,
     get_zanshin_application_support_path,
-    MarkerManager,
     get_file_extension,
     is_supported_format,
-    check_internet_connection,
     create_or_clean_dir
 )
 
@@ -815,97 +812,6 @@ def main(dev_mode=False, no_browser=False, first_run=False, port=1776):
 
     listener_thread = threading.Thread(target=parent_listener, daemon=True)
     listener_thread.start()
-
-    # Update checker thread
-    def update_checker_thread_func():
-        update_found = False
-        while not update_found:
-            try:
-                # Check internet connection
-                if not check_internet_connection():
-                    time.sleep(60)  # Wait 1 minute before checking again
-                    continue
-
-                # Check for interrupted updates
-                marker_manager = MarkerManager(app_support)
-                if marker_manager.handle_interrupted_update():
-                    print("Detected and cleaned up an interrupted update")
-
-                # Start update process
-                marker_manager.create_marker("update_check")
-
-                # Get current version
-                version_file = os.path.join(app_support, 'zanshin', 'VERSION')
-                with open(version_file, "r") as file:
-                    curr_version = file.read().strip()
-
-                # Check if update available
-                manager = ZanshinReleaseManager()
-                update = manager.get_update_info(curr_version)
-
-                if update and update['download_url']:
-                    # Progress to download stage
-                    marker_manager.progress_to_next_stage("update_check", "download")
-
-                    api_url = update['download_url']
-                    filename = update['filename']
-                    save_path = os.path.join(app_support, filename)
-
-                    # Download update tarball
-                    success = manager.download_asset(api_url, save_path)
-
-                    if success:
-                        # Progress to extraction stage
-                        marker_manager.progress_to_next_stage("download", "extraction")
-
-                        # Extract tarball (multithreaded) ; will create a dir called 'update'
-                        env = os.environ.copy()
-                        env['XZ_DEFAULTS'] = "-T 0"
-                        subprocess.run(['tar', '-xf', save_path, '-C', app_support], env=env, check=True)
-
-                        # Delete tarball
-                        os.remove(save_path)
-
-                        # Inside 'update' folder will be another tarball called update.tar.xz ; extract that too
-                        update_folder = os.path.join(app_support, 'update')
-                        update_tarball = os.path.join(update_folder, 'update.tar.xz')
-                        subprocess.run(['tar', '-xf', update_tarball, '-C', update_folder], env=env, check=True)
-
-                        # Extracting update.tar.xz inside update folder will create a folder called zanshin
-                        # The update.py script that runs at app exit will rsync that folder with the main one at ~/Library/App Support/Zanshin/zanshin
-
-                        # Delete update.tar.xz
-                        os.remove(update_tarball)
-
-                        # Progress to final stage - ready for update.py
-                        marker_manager.progress_to_next_stage("extraction", "ready_for_install")
-
-                        print(f"Successfully downloaded and extracted update for version {update['version']}")
-                        update_found = True  # Stop checking after successful update
-                    else:
-                        marker_manager.delete_marker("download")
-                        print("Failed to download update")
-
-                else:
-                    marker_manager.delete_marker("update_check")
-                    # No update available, will check again in 1 minute
-
-                # Only sleep if no update was found
-                if not update_found:
-                    time.sleep(60)  # Wait 1 minute before checking again
-
-            except Exception as e:
-                print(f"Error in update checker: {e}")
-                # On error, wait before retrying
-                if not update_found:
-                    time.sleep(60)
-
-        print("Update checker thread completed - update has been prepared")
-
-    # Check for updates only if on macOS, not in dev mode, and ~/Library/Application Support/Zanshin exists
-    if config.RUNNING_DARWIN and not dev_mode and os.path.exists(app_support) and not config.OLD_ZANSHIN:
-        update_checker_thread = threading.Thread(target=update_checker_thread_func, daemon=True)
-        update_checker_thread.start()
 
     # Notify Tauri that backend has started
     rust_comms.send({

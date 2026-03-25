@@ -3,7 +3,6 @@
 use tauri::{AppHandle, Manager, Emitter};
 use std::thread;
 use std::sync::Mutex;
-use std::process::Command;
 
 mod misc;
 
@@ -150,43 +149,6 @@ pub fn run() {
             if let Err(e) = misc::vacuum_media_db(&app_support) {
                 eprintln!("Warning: {}", e);
                 // Continue with exit even if vacuum fails
-            }
-
-            /* Run update.py if present */
-            let update_dir = app_support.join("update");
-
-            // Check if the update directory exists
-            if update_dir.exists() && update_dir.is_dir() {
-                let update_script = update_dir.join("update.py");
-
-                // Check if update.py exists
-                if update_script.exists() && update_script.is_file() {
-                    // Path to the specific Python interpreter
-                    let python_interpreter = app_support
-                        .join("zanshin")
-                        .join("python_interpreter")
-                        .join("cpython-3.13.11-macos-aarch64-none")
-                        .join("bin")
-                        .join("python");
-
-                    // Run the update script with the specified interpreter and wait for it to complete
-                    let output = Command::new(&python_interpreter)
-                        .arg(&update_script)
-                        .output()
-                        .unwrap();
-
-                    println!("Update script execution completed");
-                    println!("Exit status: {}", output.status);
-                    println!("Output: {}", String::from_utf8_lossy(&output.stdout));
-
-                    if !output.status.success() {
-                        eprintln!("Error: {}", String::from_utf8_lossy(&output.stderr));
-                    }
-                } else {
-                    println!("update.py not found in the update directory");
-                }
-            } else {
-                println!("Update directory does not exist");
             }
 
         }
