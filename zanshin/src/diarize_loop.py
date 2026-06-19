@@ -11,7 +11,8 @@ from misc import (
     create_dealer_socket,
     get_filename,
     dealer_to_router,
-    extract_yt_error
+    extract_yt_error,
+    select_youtube_video_stream_format
 )
 from senko import Diarizer
 import config
@@ -240,7 +241,7 @@ def download_youtube_audio(id, video_id, output_dir, socket):
         try:
             ydl_opts = {
                 'progress_hooks': [progress_hook],
-                'format': 'bestaudio',
+                'format': 'bestaudio[language_preference>=0]/bestaudio',
                 'outtmpl': os.path.join(output_dir, f'temp_{video_id}.%(ext)s'),
                 'retries': 3,
                 'socket_timeout': 10,
@@ -309,23 +310,14 @@ def download_youtube_audio(id, video_id, output_dir, socket):
 
                     with YoutubeDL(info_opts) as ydl_info:
                         info = ydl_info.extract_info(video_url, download=False)
+                        fallback_stream_format = select_youtube_video_stream_format(info.get('formats', []), info.get('language'))
 
-                        # Find combined formats (both audio and video)
-                        combined_formats = []
-                        for fmt in info.get('formats', []):
-                            if (fmt.get('acodec') != 'none' and
-                                fmt.get('vcodec') != 'none' and
-                                fmt.get('height')):
-                                combined_formats.append(fmt)
-
-                        if combined_formats:
-                            # Sort by height (lowest resolution first)
-                            combined_formats.sort(key=lambda x: x.get('height', 0))
-                            fallback_format = combined_formats[0]['format_id']
+                        if fallback_stream_format:
+                            fallback_format = fallback_stream_format['format_id']
 
                             broadcast_active_job_status(socket, 'progress_update', {
                                 'id': id,
-                                'stage': f'Downloading with format {fallback_format} ({combined_formats[0].get("height", "unknown")}p)'
+                                'stage': f'Downloading with format {fallback_format} ({fallback_stream_format.get("height", "unknown")}p)'
                             })
 
                             # Try downloading with the fallback format

@@ -41,6 +41,42 @@ def extract_yt_error(error_str):
     else:
         return error_str
 
+def select_youtube_video_stream_format(formats, preferred_language=None):
+    combined_formats = [
+        fmt for fmt in formats
+        if fmt.get('url') and fmt.get('acodec') != 'none' and fmt.get('vcodec') != 'none'
+    ]
+
+    if not combined_formats:
+        return None
+
+    preferred_language = (preferred_language or '').lower()
+    preferred_language_base = preferred_language.split('-')[0]
+
+    def numeric(value, default=0):
+        return value if isinstance(value, (int, float)) else default
+
+    def language_matches_preference(fmt):
+        language = (fmt.get('language') or '').lower()
+        if not language or not preferred_language:
+            return False
+        return language == preferred_language or language.split('-')[0] == preferred_language_base
+
+    def score(fmt):
+        format_note = (fmt.get('format_note') or '').lower()
+
+        return (
+            numeric(fmt.get('language_preference')),
+            'original' in format_note,
+            language_matches_preference(fmt),
+            'default' in format_note,
+            numeric(fmt.get('height')),
+            numeric(fmt.get('quality')),
+            numeric(fmt.get('tbr')),
+        )
+
+    return max(combined_formats, key=score)
+
 def broadcast_active_job_status(socket, message_type, content=''):
     json_dict = {
         'message_type': message_type,

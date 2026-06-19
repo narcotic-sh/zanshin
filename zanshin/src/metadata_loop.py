@@ -16,7 +16,8 @@ from misc import (
     extract_first_bright_frame,
     extract_first_bright_frame_av,
     extract_yt_error,
-    extract_audio_artwork
+    extract_audio_artwork,
+    select_youtube_video_stream_format
 )
 import config
 import av
@@ -262,11 +263,9 @@ def get_video_info(video_id, force_get_raw_stream):
         # Get video stream URL if not embeddable
         video_stream_url = None
         if not embeddable or force_get_raw_stream:
-            # Look for a combined audio+video stream
-            for format in info.get('formats', []):
-                if format.get('acodec') != 'none' and format.get('vcodec') != 'none':
-                    video_stream_url = format.get('url')
-                    break
+            stream_format = select_youtube_video_stream_format(info.get('formats', []), info.get('language'))
+            if stream_format:
+                video_stream_url = stream_format.get('url')
 
         aspect_ratio = None
         if width and height:
